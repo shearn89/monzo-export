@@ -16,6 +16,7 @@
 *.ofx
 setenv
 .last_export
+last_export
 bin/
 pkg/
 

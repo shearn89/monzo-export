@@ -16,7 +16,7 @@ import (
 	monzo "github.com/shearn89/monzo-export/monzo"
 )
 
-func getTransactions(output *monzo.MonzoTransactions, string lastTransId) error {
+func getTransactions(output *monzo.MonzoTransactions, lastTransId string) error {
 	// since := "2017-06-16T00:00:00Z"
 	token := os.Getenv("MONZO_ACCESS_TOKEN")
 	accId := os.Getenv("MONZO_ACCOUNT_ID")
@@ -28,7 +28,8 @@ func getTransactions(output *monzo.MonzoTransactions, string lastTransId) error 
 	q := req.URL.Query()
 	q.Add("account_id", accId)
 	q.Add("expand[]", "merchant")
-	if lastTransId != nil {
+	if lastTransId != "" {
+		fmt.Println("last ID provided, paginating")
 		q.Add("since", lastTransId)
 	}
 	req.URL.RawQuery = q.Encode()
@@ -71,8 +72,8 @@ func getAccounts() (string, error) {
 }
 
 func main() {
-	lastTransId := nil
-	dat, err := ioutil.ReadAll(".last_export")
+	lastTransId := ""
+	dat, err := ioutil.ReadFile(".last_export")
 	if err != nil {
 		fmt.Println("Unable to read .last_export file, getting all transactions")
 	} else {
